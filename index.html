@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knopf Klickzähler mit Code</title>
+    <style>
+        /* Allgemeine Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            background: linear-gradient(135deg, #f0f4f8, #e1e8f0);
+            margin: 0;
+            padding: 50px;
+            color: #333;
+        }
+
+        h1 {
+            font-size: 36px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            font-size: 22px;
+            color: #444;
+        }
+
+        /* Knopf Styles */
+        button {
+            padding: 20px 40px;
+            font-size: 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 10px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        button:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        button:hover:enabled {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Eingabefeld Styles */
+        input {
+            padding: 12px;
+            font-size: 18px;
+            margin-top: 20px;
+            width: 250px;
+            border-radius: 5px;
+            border: 2px solid #3498db;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            border-color: #2980b9;
+        }
+
+        /* Anzeige des Klicks */
+        #click-count {
+            font-size: 24px;
+            margin-top: 20px;
+            color: #34495e;
+            font-weight: bold;
+        }
+
+        /* Container Styles */
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .input-container {
+            margin-top: 40px;
+        }
+
+        .footer {
+            margin-top: 50px;
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        .footer a {
+            color: #3498db;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Willkommen zum Knopf Klickzähler!</h1>
+        <button id="click-button" disabled>Klick mich!</button>
+        <div id="click-count">Klicks: 0</div>
+
+        <div class="input-container">
+            <h3>Code eingeben, um den Knopf zu aktivieren:</h3>
+            <input type="text" id="code-input" placeholder="Code eingeben">
+            <button id="code-button">Code prüfen</button>
+        </div>
+
+        <div class="input-container">
+            <h3>Code eingeben, um den Klick-Counter zurückzusetzen:</h3>
+            <input type="text" id="reset-code-input" placeholder="Code eingeben (reset)">
+            <button id="reset-code-button">Counter zurücksetzen</button>
+        </div>
+
+        <div class="footer">
+            <p>Erstellt von <a href="https://deine-website.com" target="_blank">Dein Name</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Zugriff auf die Elemente
+        const clickButton = document.getElementById("click-button");
+        const clickCountDisplay = document.getElementById("click-count");
+        const codeInput = document.getElementById("code-input");
+        const codeButton = document.getElementById("code-button");
+        const resetCodeInput = document.getElementById("reset-code-input");
+        const resetCodeButton = document.getElementById("reset-code-button");
+
+        // Initiale Klickzahl aus localStorage holen
+        let clickCount = parseInt(localStorage.getItem("clickCount")) || 0;
+
+        // Klickzahl anzeigen
+        function updateClickCount() {
+            clickCountDisplay.textContent = `Klicks: ${clickCount}`;
+        }
+
+        // Funktion, die ausgeführt wird, wenn der Knopf gedrückt wird
+        function handleClick() {
+            // Klickzahl erhöhen
+            clickCount += 1;
+            localStorage.setItem("clickCount", clickCount); // Speichern
+
+            // Klickzahl aktualisieren
+            updateClickCount();
+
+            // Knopf deaktivieren, um Code erneut einzugeben
+            clickButton.disabled = true;
+        }
+
+        // Funktion, um den Code zu prüfen und den Knopf zu aktivieren
+        function checkCode() {
+            const code = codeInput.value.trim();
+            if (code === "123456") {
+                alert("Code korrekt! Du kannst den Knopf jetzt drücken.");
+                clickButton.disabled = false;  // Knopf aktivieren
+            } else {
+                alert("Falscher Code. Versuche es noch einmal.");
+            }
+            codeInput.value = ""; // Eingabefeld leeren
+        }
+
+        // Funktion, um den Reset-Code zu prüfen und den Counter zurückzusetzen
+        function resetCounter() {
+            const resetCode = resetCodeInput.value.trim();
+            if (resetCode === "654321") {
+                // Klick-Counter zurücksetzen
+                clickCount = 0;
+                localStorage.setItem("clickCount", clickCount); // Speichern
+                updateClickCount();
+                alert("Klick-Counter wurde zurückgesetzt!");
+            } else {
+                alert("Falscher Reset-Code. Versuche es noch einmal.");
+            }
+            resetCodeInput.value = ""; // Eingabefeld leeren
+        }
+
+        // Event-Listener für den Klick-Button
+        clickButton.addEventListener("click", handleClick);
+
+        // Event-Listener für den Code-Button
+        codeButton.addEventListener("click", checkCode);
+
+        // Event-Listener für den Reset-Code-Button
+        resetCodeButton.addEventListener("click", resetCounter);
+
+        // Klickzahl beim Starten der Seite anzeigen
+        updateClickCount();
+    </script>
+</body>
+</html>
